@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lost & Found Tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #F3F4F6;
+      color: #1F2937;
+    }
+
+    body,
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    nav {
+      background: #0F172A;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .brand {
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    nav button {
+      background: #14B8A6;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0F172A, #1E293B);
+      color: white;
+      border-radius: 18px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #0F172A;
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 1.2rem;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #0F172A;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn.primary {
+      background: #14B8A6;
+      color: white;
+    }
+
+    .btn.secondary {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+
+    select,
+    .filter-row {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .filter-row select,
+    .filter-row input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 12px;
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .feed-header h2 {
+      font-size: 1.1rem;
+    }
+
+    .feed-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .item {
+      background: white;
+      border-radius: 18px;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .item-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: #E2E8F0;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+    }
+
+    .item-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      color: #475569;
+      font-size: 0.85rem;
+    }
+
+    .item-actions button {
+      background: #E2E8F0;
+      color: #0F172A;
+      border: none;
+      border-radius: 10px;
+      padding: 0.55rem 0.8rem;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.5);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 18px;
+      width: min(560px, 100%);
+      padding: 1.5rem;
+    }
+
+    .modal h3 {
+      margin-bottom: 1rem;
+    }
+
+    .modal input,
+    .modal select,
+    .modal textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .modal textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #CBD5E1;
+      border-radius: 12px;
+      background: #F8FAFC;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: #0F172A;
+      color: white;
+      border-color: #0F172A;
+    }
+
+    footer {
+      text-align: center;
+      margin: 2rem 0 1rem;
+      color: #475569;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="brand">Lost & Found Tracker</div>
+    <button id="authButton" onclick="authAction()">Login</button>
+  </nav>
+  <div class="page">
+    <section class="hero">
+      <h1>Find or report lost items fast</h1>
+      <div class="filter-row"><input id="searchInput" placeholder="Search items, location, category" oninput="render()" /></div>
+    </section>
+    <div class="grid">
+      <aside class="card">
+        <h2>Quick Actions</h2>
+        <button class="btn primary" onclick="openOrAuth('lost')">Report Lost Item</button>
+        <button class="btn secondary" onclick="openOrAuth('found')">Report Found Item</button>
+        <div class="filter-row">
+          <select id="filter-status" onchange="render()">
+            <option value="all">All items</option>
+            <option value="lost">Lost only</option>
+            <option value="found">Found only</option>
+          </select>
+        </div>
+        <div class="filter-row">
+          <select id="filter-location" onchange="render()">
+            <option value="">Any location</option>
+            <option>Library</option>
+            <option>Cafeteria</option>
+            <option>Main Block</option>
+            <option>Lab Block</option>
+            <option>Hostel</option>
+            <option>Sports Ground</option>
+          </select>
+        </div>
+      </aside>
+      <main>
+        <div class="feed-header">
+          <h2>Recent Items</h2>
+          <div class="tabs">
+            <button class="active" id="tab-recent" onclick="sortBy('recent', this)">Recent</button>
+            <button onclick="sortBy('match', this)">Best Match</button>
+          </div>
+        </div>
+        <div id="itemList" class="feed-list"></div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="authModal" onclick="closeModal(event, 'authModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="tabs">
+        <button class="active" id="loginTab" onclick="showAuth('login')">Login</button>
+        <button id="signupTab" onclick="showAuth('signup')">Register</button>
+      </div>
+      <div id="loginPanel">
+        <h3>Sign in</h3>
+        <input id="loginEmail" placeholder="Email or ID" />
+        <input id="loginPass" type="password" placeholder="Password" />
+        <div class="modal-actions"><button class="btn primary" onclick="login()">Login</button></div>
+      </div>
+      <div id="signupPanel" style="display:none;">
+        <h3>Register</h3>
+        <input id="signupName" placeholder="Full name" />
+        <input id="signupEmail" placeholder="Email" />
+        <input id="signupPass" type="password" placeholder="Password" />
+        <div class="modal-actions"><button class="btn primary" onclick="signup()">Create account</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="postModal" onclick="closeModal(event, 'postModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h3>Report an Item</h3>
+      <select id="postType"><option value="lost">Lost</option><option value="found">Found</option></select>
+      <input id="postTitle" placeholder="Item name" />
+      <input id="postLocation" placeholder="Location" />
+      <textarea id="postDesc" placeholder="Description"></textarea>
+      <div class="modal-actions"><button class="btn primary" onclick="saveItem()">Submit</button></div>
+    </div>
+  </div>
+
+  <footer>Simple tracker version · Open locally as lost and found.html</footer>
+
+  <script>
+    // Application state
+    let loggedIn = false;
+    let itemList = [
+      { id: 1, type: 'lost', title: 'Blue Denim Backpack', loc: 'Library', desc: 'Adidas bag with laptop inside.', match: 92 },
+      { id: 2, type: 'found', title: 'Samsung Galaxy A54', loc: 'Cafeteria', desc: 'Found near table 12.', match: 0 },
+      { id: 3, type: 'lost', title: 'Honda Bike Keys', loc: 'Main Block', desc: 'Red keychain with H logo.', match: 78 }
+    ];
+    let currentSort = 'recent';
+
+    // Render the visible item feed using search and filters
+    function render() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('filter-status').value;
+      const locationFilter = document.getElementById('filter-location').value;
+
+      let visibleItems = itemList.filter(item => {
+        const matchesQuery = !query || item.title.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query);
+        const matchesStatus = statusFilter === 'all' || item.type === statusFilter;
+        const matchesLocation = !locationFilter || item.loc === locationFilter;
+        return matchesQuery && matchesStatus && matchesLocation;
+      });
+
+      if (currentSort === 'match') {
+        visibleItems = visibleItems.slice().sort((a, b) => b.match - a.match);
+      }
+
+      const feedHtml = visibleItems.map(item => `
+        <div class="item">
+          <div class="item-icon">${item.type === 'lost' ? '😟' : '🙌'}</div>
+          <div>
+            <div class="item-title">${item.title}</div>
+            <div>${item.desc}</div>
+            <div class="item-meta">${item.loc} · ${item.type.toUpperCase()}</div>
+          </div>
+          <div><button onclick="alert('Contact owner')">Contact</button></div>
+        </div>
+      `).join('');
+
+      const emptyMessage = '<div class="card">No items found.</div>';
+      document.getElementById('itemList').innerHTML = feedHtml || emptyMessage;
+    }
+
+    // Open login/register modal or log out when already logged in
+    function authAction() {
+      if (loggedIn) {
+        loggedIn = false;
+        document.getElementById('authButton').textContent = 'Login';
+      } else {
+        showModal('authModal');
+      }
+    }
+
+    // Show the given modal by id
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('open');
+    }
+
+    // Close a modal when the backdrop is clicked
+    function closeModal(event, modalId) {
+      if (event.target.id === modalId) {
+        event.target.classList.remove('open');
+      }
+    }
+
+    // Switch between login and signup panels
+    function showAuth(panel) {
+      document.getElementById('loginPanel').style.display = panel === 'login' ? '' : 'none';
+      document.getElementById('signupPanel').style.display = panel === 'signup' ? '' : 'none';
+      document.getElementById('loginTab').classList.toggle('active', panel === 'login');
+      document.getElementById('signupTab').classList.toggle('active', panel === 'signup');
+    }
+
+    // Handle login form submission
+    function login() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value;
+      if (!email || !password) {
+        alert('Enter email and password');
+        return;
+      }
+      loggedIn = true;
+      document.getElementById('authButton').textContent = 'Logout';
+      document.getElementById('authModal').classList.remove('open');
+    }
+
+    // Handle signup form submission
+    function signup() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPass').value;
+      if (!name || !email || !password) {
+        alert('Fill all fields');
+        return;
+      }
+      alert('Account created. You can now login.');
+      showAuth('login');
+    }
+
+    // Open the report modal if logged in, otherwise show auth modal first
+    function openOrAuth(itemType) {
+      if (!loggedIn) {
+        showModal('authModal');
+        return;
+      }
+      document.getElementById('postType').value = itemType;
+      showModal('postModal');
+    }
+
+    // Save a new item from the report form
+    function saveItem() {
+      const newItem = {
+        id: itemList.length + 1,
+        type: document.getElementById('postType').value,
+        title: document.getElementById('postTitle').value.trim() || 'Unnamed item',
+        loc: document.getElementById('postLocation').value.trim() || 'Unknown',
+        desc: document.getElementById('postDesc').value.trim() || 'No description',
+        match: 0
+      };
+      itemList.unshift(newItem);
+      document.getElementById('postModal').classList.remove('open');
+      render();
+    }
+
+    // Change the sort order and update the active tab
+    function sortBy(sortType, button) {
+      currentSort = sortType;
+      document.querySelectorAll('.feed-header .tabs button').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
